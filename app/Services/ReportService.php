@@ -49,7 +49,7 @@ class ReportService
             }
 
             // approve payment
-            foreach ($approvers as $approver) {
+            foreach ($approvers as $key => $approver) {
                 if ($approver->type === 'approver') {
                     if (isset($reportData[$approver->first_name . ' ' . $approver->last_name]['totalApprovedSum'])) {
                         $reportData[$approver->first_name . ' ' . $approver->last_name]['totalApprovedSum'][0] += $amount;
@@ -59,8 +59,8 @@ class ReportService
                     }
 
                     // if all approvers have voted
-                    if (next($approvers) !== true) {
-                        $paymentApproval->status = 'approved';
+                    if ($key === array_key_last($approvers->toArray())) {
+                        $paymentApproval->update(['status' => 'approved']);
                     }
                 }
             }
